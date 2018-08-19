@@ -15,8 +15,6 @@ func init() {
 	if err != nil {
 		panic(err.Error())
 	}
-
-	return dbConn
 }
 
 

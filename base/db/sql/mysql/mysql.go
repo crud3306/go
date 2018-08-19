@@ -26,8 +26,22 @@ CREATE TABLE IF NOT EXISTS user(
     create_at INT(10) UNSIGNED NOT NULL DEFAULT 0
 )ENGINE=InnoDB DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 */
+
+// var (
+//     db *sql.DB
+//     err error
+// )
+
+var cccc string
+
+func init() {
+    cccc = "123456"
+}
  
 func main() {
+    
+    fmt.Println(cccc)
+
     // 通过sql.Open 打开数据库，此处并不验证是否成功连接数据库，当调用db的方法时，才开始验证，比如下面的db.Ping()
     // DSN数据源支持两种格式
     // 1）用户名:密码@协议(地址:端口)/数据库?charset=utf8
@@ -42,10 +56,9 @@ func main() {
     defer db.Close();
 
     err = db.Ping()
-	if err != nil {
-	    // do something here
-	}
-
+    if err != nil {
+        // do something here
+    }
 
     // 添加
     // insertSql(db, "张三")
@@ -58,7 +71,12 @@ func main() {
 
 
     // 查询
-    // selectSql(db)
+    selectSql(db)
+
+
+    // 查单条
+    // selectOne(db, 2)
+
 
     // 删除
     // deleteSql(db, 2)
@@ -81,6 +99,8 @@ func insertSql(db *sql.DB, name string) {
     }
     fmt.Println(id)
     // fmt.Println(res.RowsAffected())
+
+    stmt.Close()
 }
 
 // 修改数据
@@ -96,9 +116,11 @@ func updateSql(db *sql.DB, name string, id int) {
         panic(err)
     }
     fmt.Println(rowsAffected)
+
+    stmt.Close()
 }
 
-// 查询数据
+// 查询列表数据
 // =================
 func selectSql(db *sql.DB) {
     stmt, _ := db.Prepare("select id, username from user")
@@ -117,6 +139,16 @@ func selectSql(db *sql.DB) {
         fmt.Println(id, username)    
     }
     
+    stmt.Close()
+}
+
+// 查询单条数据
+// =================
+func selectOne(db *sql.DB, id int) {
+    stmt, _ := db.Prepare("select username from user where id = ?")
+    var username string
+    stmt.QueryRow(id).Scan(&username)
+    stmt.Close()
 }
 
 // 删除数据
@@ -132,6 +164,8 @@ func deleteSql(db *sql.DB, id int) {
         panic(err)
     }
     fmt.Println(rowsAffected)
+
+    stmt.Close()
 }
 
 
