@@ -21,8 +21,8 @@ func main() {
 
 	fmt.Println(222)    
 
-    ch <- 0 // 向ch中加数据，如果没有其他goroutine来取走这个数据，那么挂起foo, 直到main函数把0这个数据拿走
-    go foo()
+	ch <- 0 // 向ch中加数据，如果没有其他goroutine来取走这个数据，那么挂起foo, 直到main函数把0这个数据拿走
+	go foo()
 
 	fmt.Println(333)    
 }
