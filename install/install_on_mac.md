@@ -1,13 +1,16 @@
 
 安装  
 -------------
-下载地址：https://studygolang.com/dl  
-或：https://golang.google.cn/dl/  
+下载地址：
+https://studygolang.com/dl   
+或：  
+https://golang.google.cn/dl/    
   
+
 mac下两种安装方式：
 =============
-1 下载压缩包(xxx.tar.gz)，解压即可 (简单快速)
-2 下载安装包(xxx.pkg)，点击安装
+1 下载压缩包(xxx.tar.gz)，解压即可 (简单快速)  
+2 下载安装包(xxx.pkg)，点击安装  
   
   
   

@@ -46,6 +46,42 @@ func BubbleSort2(items []int) {
 }
 
 
+
+// 选择排序
+// ==================
+// 选择排序法：每一次从待排序的数据元素中选出最小（或最大）的一个元素，存放到序列的起始位置，直到全部排完。
+func selectionSort(items []int) {
+    var n = len(items)
+    for i := 0; i < n; i++ {
+        var minIdx = i
+        for j := i; j < n; j++ {
+            if items[j] < items[minIdx] {
+                minIdx = j
+            }
+        }
+        items[i], items[minIdx] = items[minIdx], items[i]
+    }
+}
+
+
+// 插入排序
+// ==================
+// 列表被分为有序区和无序区两个部分。最初有序区只有一个元素。
+// 每次从无序区选择一个元素，插入到有序区的位置，直到无序区变空。
+func insertionSort(items []int) {
+    var n = len(items)
+    for i := 1; i < n; i++ {
+        j := i
+        for j > 0 {
+            if items[j-1] > items[j] {
+                items[j-1], items[j] = items[j], items[j-1]
+            }
+            j = j - 1
+        }
+    }
+}
+
+
 // 快速排序
 // ==================
 func QuickSort(data []int) {
@@ -67,43 +103,6 @@ func QuickSort(data []int) {
     QuickSort(data[:pos])
     QuickSort(data[pos+1:])
 }
-
-
-
-// 选择排序
-// ==================
-func selectionSort(items []int) {
-    var n = len(items)
-    for i := 0; i < n; i++ {
-        var minIdx = i
-        for j := i; j < n; j++ {
-            if items[j] < items[minIdx] {
-                minIdx = j
-            }
-        }
-        items[i], items[minIdx] = items[minIdx], items[i]
-    }
-}
-
-
-// 插入排序
-// ==================
-func insertionSort(items []int) {
-    var n = len(items)
-    for i := 1; i < n; i++ {
-        j := i
-        for j > 0 {
-            if items[j-1] > items[j] {
-                items[j-1], items[j] = items[j], items[j-1]
-            }
-            j = j - 1
-        }
-    }
-}
-
-
-// xxx排序
-// ==================
 
 
 
