@@ -184,7 +184,7 @@ if 语句 后可以使用可选的 else 语句, else 语句中的表达式在布
 if 嵌套语句  
 你可以在 if 或 else if 语句中嵌入一个或多个 if 或 else if 语句。   
   
-switch 语句	 
+switch 语句  
 switch 语句用于基于不同条件执行不同动作。配合case使用。go的case语句默认会break，所以不用手动加break(当然加了也不为错)。    
   
 select 语句  
