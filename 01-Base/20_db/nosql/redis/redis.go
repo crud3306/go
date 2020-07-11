@@ -1,3 +1,13 @@
+
+
+// 安装
+// ===========
+// go get github.com/astaxie/goredis
+
+
+
+// 使用
+// ===========
 package main
 
 // goredis源码 
