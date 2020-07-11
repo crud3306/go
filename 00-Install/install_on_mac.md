@@ -1,38 +1,55 @@
 
-安装  
--------------
-下载地址：  
-https://studygolang.com/dl   
-或：  
-https://golang.google.cn/dl/    
-  
 
 mac下两种安装方式：
 =============
 1 下载压缩包(xxx.tar.gz)，解压即可 (简单快速)  
-2 下载安装包(xxx.pkg)，点击安装  
-  
-配置
-------------
-Download the archive and extract it into /usr/local, creating a Go tree in /usr/local/go. For example:
-```
-tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
-注：$VERSION.$OS-$ARCH 改成你自已下载的版本号
-```
-Add /usr/local/go/bin to the PATH environment variable. You can do this by adding this line to your /etc/profile (for a system-wide installation) or $HOME/.profile:
-```
-vi ~/.profile
-export PATH=$PATH:/usr/local/go/bin
+	如：go1.14.4.linux-amd64.tar.gz  
 
+2 下载安装包(xxx.pkg)，点击安装  
+
+
+下载地址：  
+https://studygolang.com/dl   
+或：  
+https://golang.google.cn/dl/    
+
+  
+安装
+------------
+```sh
+#tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
+#注：$VERSION.$OS-$ARCH 改成你自已下载的版本号
+cd /usr/local/src/
+wget https://studygolang.com/dl/golang/go1.14.4.linux-amd64.tar.gz
+ll
+tar -xzf go1.14.4.linux-amd64.tar.gz -C /usr/local
+```
+
+设置环境变量
+------------
+```sh
+#创建工作目录，名字随意
+mkdir ~/gopath
+
+#设置环境变量
+vi ~/.profile
+export GOROOT=/usr/local/go   #（你解压后的目录，即安装目录）
+export PATH=$GOROOT/bin:$PATH
+export GOPATH=/xxx/gopath  #（你的开发地址，这个随便，你自己设置，假设~/gopath）
+
+#刷新环境变量
 source ~/.profile
 ```
 
-创建你自已的工作目录
-> cd ~  
-> mkdir go/src  
+验证一下是否安装成功
+------------
+> go version
+
+
 开始第一个脚本  
+------------
 > vi hello.go  
-```
+```go
 package main
 
 import "fmt"
@@ -48,13 +65,18 @@ func main() {
   
 $GOROOT 与 $GOPATH  
 -------------
-$GOROOT  
-go的安装目录  
-如：/usr/local/go  
-  
-$GOPATH  
-go项目的工作目录  
-如：~/go  
-  
 $GOROOT，$GOPATH 一般不是同一个目录  
+
+$GOROOT：go的安装目录
+```sh
+  
+如：/usr/local/go  
+```
+
+$GOPATH：go项目的工作目录
+```sh
+如：~/go  
+```
+
+
 
