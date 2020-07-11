@@ -1,5 +1,5 @@
 
-注：UNIX/Linux/Mac OS X, 和 FreeBSD 安装
+注：UNIX/Linux/Mac OS X, 和 FreeBSD 均可采用如下安装方式
 
   
 安装
@@ -13,8 +13,6 @@ https://studygolang.com/dl
 https://golang.google.cn/dl/    
 
 ```sh
-#tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
-#注：$VERSION.$OS-$ARCH 改成你自已下载的版本号
 cd /usr/local/src/
 wget https://studygolang.com/dl/golang/go1.14.4.linux-amd64.tar.gz
 ll
@@ -38,7 +36,7 @@ source ~/.profile
 ```
 
 
-验证一下是否安装成功
+验证是否安装成功
 ------------
 > go version
 
@@ -55,6 +53,7 @@ func main() {
 	fmt.Printf("hello, world\n")
 }
 ```
+
 执行  
 > go run hello.go  
 

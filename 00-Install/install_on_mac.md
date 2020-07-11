@@ -2,23 +2,21 @@
 
 mac下两种安装方式：
 =============
-1 下载压缩包(xxx.tar.gz)，解压即可 (简单快速)  
+1 下载二进制包(xxx.tar.gz)，解压即可 (简单快速)  
 	如：go1.14.4.linux-amd64.tar.gz  
 
 2 下载安装包(xxx.pkg)，点击安装  
-
 
 下载地址：  
 https://studygolang.com/dl   
 或：  
 https://golang.google.cn/dl/    
 
-  
-安装
+
+
+这里用方式1，下载二进制包 安装
 ------------
 ```sh
-#tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
-#注：$VERSION.$OS-$ARCH 改成你自已下载的版本号
 cd /usr/local/src/
 wget https://studygolang.com/dl/golang/go1.14.4.linux-amd64.tar.gz
 ll
