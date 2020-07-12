@@ -1,5 +1,7 @@
 
 
+Go 是一个开源的编程语言，它能让构造简单、可靠且高效的软件变得容易。
+
 
 Go 语言特色
 -------------
@@ -18,7 +20,7 @@ Go 语言被设计成一门应用于搭载 Web 服务器，存储集群或类似
 安装
 -------------
 Go的安装请见00-Install目录：
-https://github.com/crud3306/go-start/tree/master/install   
+https://github.com/crud3306/go/tree/master/00-Install   
 
 
 路径 $GOROOT 与 $GOPATH  
