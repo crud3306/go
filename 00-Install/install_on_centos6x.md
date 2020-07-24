@@ -32,7 +32,7 @@ export PATH=$GOROOT/bin:$PATH
 export GOPATH=/xxx/gopath  #（你的开发地址，这个随便，你自己设置，假设~/gopath）
 
 #刷新环境变量
-source ~/.profile
+source ~/.bash_profile
 ```
 
 
