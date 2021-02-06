@@ -66,10 +66,10 @@ export GOPROXY
 
 开发时，常用两种方式
 
-- 基于GOPATH目录开发
+- 基于GOPATH目录开发  
 	配置GOPATH目录，code需放置在该目录下
 	
-- go mod
+- go mod  
 	代码无需放置GOPATH目录下
 
 
@@ -92,7 +92,7 @@ GOPATH目录指明了你go代码的工作空间的位置，不能与GOROOT目录
 -------------
 src的源码代码可以go get github.com/** 的方式获取，也可以从复制别的地方项目到src目录下。
 
-go get使用
+go get 使用
 ```sh
 #下载项目依赖
 go get ./...

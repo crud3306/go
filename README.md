@@ -76,7 +76,7 @@ go install：的作用有两步：
 接下来我们来编写第一个 Go 程序 hello.go（Go 语言源文件的扩展是 .go），代码如下：
 
 hello.go 文件
-```go
+```golang
 package main
 
 import "fmt"
@@ -103,6 +103,12 @@ Hello, World!
 ```
 
    
+
+
+参考地址：   
+https://www.runoob.com/go/go-tutorial.html  
+https://draveness.me/golang/    
+https://chai2010.gitbooks.io/advanced-go-programming-book/content/    
 
 
 
