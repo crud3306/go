@@ -1,0 +1,9 @@
+{"level":"INFO","ts":"2020-11-30T15:05:07.334+0800","msg":"aaaa=========="}
+{"level":"INFO","ts":"2020-11-30T15:13:36.026+0800","msg":"aaaa=========="}
+{"level":"INFO","ts":"2020-11-30T15:14:20.836+0800","msg":"aaa=========="}
+{"level":"ERROR","ts":"2020-11-30T15:14:20.871+0800","msg":"bbb==========","stacktrace":"main.main\n\tD:/src/go_work/green/main.go:23\nruntime.main\n\tD:/soft/Go/src/runtime/proc.go:203"}
+{"level":"INFO","ts":"2020-11-30T15:14:43.982+0800","msg":"aaa=========="}
+{"level":"ERROR","ts":"2020-11-30T15:14:44.011+0800","msg":"bbb==========","stacktrace":"main.main\n\tD:/src/go_work/green/main.go:23\nruntime.main\n\tD:/soft/Go/src/runtime/proc.go:203"}
+{"level":"INFO","ts":"2020-11-30T15:21:26.494+0800","caller":"green/main.go:22","msg":"aaa=========="}
+{"level":"ERROR","ts":"2020-11-30T15:21:26.522+0800","caller":"green/main.go:23","msg":"bbb=========="}
+{"level":"ERROR","ts":"2020-11-30T15:22:27.565+0800","caller":"green/main.go:23","msg":"bbb=========="}

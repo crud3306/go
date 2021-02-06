@@ -1,0 +1,45 @@
+app_name = "awesome web"
+
+# possible values: DEBUG, INFO, WARNING, ERROR, FATAL
+log_level = "DEBUG"
+
+[mysql]
+ip = "127.0.0.1"
+port = 3306
+user = "dj"
+password = 123456
+database = "awesome"
+
+[redis]
+ip = "127.0.0.2"
+port = 7385
+
+[httpLog]
+filePath = "./log/web.log"
+#debug info warn error fatal (日志级别从大到小)
+level  = "info"
+#日志文件最大容量(单位：MB),超过容量，文件会自动分割
+maxSize = 100
+#保留的日志天数(单位：天)
+maxAge = 30
+#保留的日志文件个数，文件数量超过该值，最旧的文件会被删除
+maxBackups = 100
+#日志输出采样率(1.0=全部输出)
+outputProbability = 1.0
+#是否输出到标准输出中
+toStdout = true
+
+[consoleLog]
+filePath = "./log/console.log"
+#debug info warn error fatal (日志级别从大到小)
+level  = "info"
+#日志文件最大容量(单位：MB),超过容量，文件会自动分割
+maxSize = 100
+#保留的日志天数(单位：天)
+maxAge = 30
+#保留的日志文件个数，文件数量超过该值，最旧的文件会被删除
+maxBackups = 100
+#日志输出采样率(1.0=全部输出)
+outputProbability = 1.0
+#是否输出到标准输出中
+toStdout = true
