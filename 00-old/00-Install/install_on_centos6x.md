@@ -26,13 +26,13 @@ tar -xzf go1.14.4.linux-amd64.tar.gz -C /usr/local
 mkdir ~/gopath
 
 #设置环境变量
-vi ~/.profile
+vi ~/.bash_profile
 export GOROOT=/usr/local/go   #（你解压后的目录，即安装目录）
 export PATH=$GOROOT/bin:$PATH
 export GOPATH=/xxx/gopath  #（你的开发地址，这个随便，你自己设置，假设~/gopath）
 
 #刷新环境变量
-source ~/.profile
+source ~/.bash_profile
 ```
 
 
