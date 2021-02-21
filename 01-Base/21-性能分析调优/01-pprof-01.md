@@ -14,9 +14,13 @@ Golang是一个非常注重性能的语言，因此语言的内置库里就自�
 
 GO中自带两个库可以进行程序分析调优：
 ------------
-1）runtime/pprof 对于本地只跑一次的程序，例如程序中的某一函数调优，调用 pprof 包提供的函数，手动开启性能数据采集。
-2）net/http/pprof 对于在线服务，对于一个 HTTP Server，访问 pprof 提供的 HTTP 接口，获得性能数据。当然，实际上这里底层也是调用的 runtime/pprof 提供的函数，封装成接口对外提供网络访问。
+1）runtime/pprof 采集工具型应用运行数据进行分析  
+对于本地只跑一次的程序，例如程序中的某一函数调优，调用 pprof 包提供的函数，手动开启性能数据采集。
+
+2）net/http/pprof 采集服务型应用运行时数据进行分析  
+对于在线服务，对于一个 HTTP Server，访问 pprof 提供的 HTTP 接口，获得性能数据。当然，实际上这里底层也是调用的 runtime/pprof 提供的函数，封装成接口对外提供网络访问。
 一般常用net/http/pprof，操作相对简单
+
 
 
 
@@ -24,25 +28,47 @@ GO中自带两个库可以进行程序分析调优：
 ============
 如果你的应用是工具类应用，执行完任务就结束退出，可以使用 `runtime/pprof` [1]库。
 
+
+CPU性能分析
+------------
 比如要想进行 CPU Profiling，可以调用 pprof.StartCPUProfile() 方法，它会对当前应用程序进行CPU使用情况分析，并写入到提供的参数中（w io.Writer），要停止调用 StopCPUProfile() 即可。
 
 
 去除错误处理只需要三行内容，一般把部分内容写在 main.go 文件中，应用程序启动之后就开始执行：
-```sh
-f, err := os.Create(*cpuprofile)
-...
-pprof.StartCPUProfile(f)
+```golang
+file, err := os.Create("./cpu.pprof")
+if err != nil {
+  fmt.Printf("create cpu pprof failed, err:%v\n", err)
+  return
+}
+pprof.StartCPUProfile(file)
 defer pprof.StopCPUProfile()
 ```
-应用执行结束后，就会生成一个文件，保存了我们应用的 CPU使用情况数据。
+这段code写在业务开始之前
+
+应用执行结束后，就会生成一个文件，保存了我们应用的 CPU使用情况数据。得到采样数据之后，使用go tool pprof工具进行CPU性能分析。
 
 
+
+内存性能分析
+-------------
 想要获得内存的数据，直接使用 WriteHeapProfile 就行，不用 start 和 stop 这两个步骤了：
 ```golang
-f, err := os.Create(*memprofile)
-pprof.WriteHeapProfile(f)
-f.Close()
+file, err := os.Create("./mem.pprof")
+if err != nil {
+  fmt.Printf("create mem pprof failed, err:%v\n", err)
+  return
+}
+pprof.WriteHeapProfile(file)
+file.Close()
 ```
+这段code写在业务结束之前
+
+得到采样数据之后，使用go tool pprof工具进行内存性能分析。
+
+
+go tool pprof默认是使用-inuse_space进行统计，还可以使用-inuse-objects查看分配对象的数量。
+
 
 
 
@@ -52,8 +78,18 @@ f.Close()
 如果你的应用是一直运行的，比如 web 应用或者gRPC服务等，那么可以使用 net/http/pprof 库，它能够在应用提供 HTTP 服务时进行分析。
 
 如果使用了默认的 http.DefaultServeMux（通常是代码直接使用 http.ListenAndServe("0.0.0.0:8000", nil)），只需要在代码中添加一行，匿名引用net/http/pprof：
+```golang
+package main
 
-> import _ "net/http/pprof"
+import (
+  _ "net/http/pprof"
+  "net/http"
+)
+
+func main() {
+  http.ListenAndServe("0.0.0.0:8000", nil)
+}
+```
 
 如果你使用自定义的 ServerMux复用器，则需要手动注册一些路由规则：
 ```golang
@@ -65,11 +101,18 @@ r.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
 r.HandleFunc("/debug/pprof/trace", pprof.Trace)
 ```
 
+如果你使用的是Gin框架，那么推荐使用github.com/gin-contrib/pprof，在代码中通过以下命令注册pprof相关路由。
+```golang
+import "github.com/gin-contrib/pprof"
+
+pprof.Register(router)
+```
+
 注册完后访问http://localhost/debug/pprof端点，它会得到类似下面的页面内容：
 ```sh
 Types of profiles available:
 Count Profile
-// 下面是一些可访问的/debug/pprof/目录下的路由
+# 下面是一些可访问的/debug/pprof/目录下的路由
 2 allocs
 0 block
 0 cmdline
@@ -82,7 +125,7 @@ Count Profile
 full goroutine stack dump
 Profile Descriptions:
 
-// 下面是对上面那些路由页面里展示的性能分析数据的解释
+# 下面是对上面那些路由页面里展示的性能分析数据的解释
 allocs: A sampling of all past memory allocations
 block: Stack traces that led to blocking on synchronization primitives
 cmdline: The command line invocation of the current program
@@ -96,13 +139,18 @@ trace: A trace of execution of the current program. You can specify the duration
 
 这个路径下几个需要重点关注的子页面有：
 ```sh
-/debug/pprof/profile：访问这个链接会自动进行 CPU profiling，持续 30s，并生成一个文件供下载，可以通过带参数?=seconds=60进行60秒的数据采集
-/debug/pprof/heap：Memory Profiling 的路径，访问这个链接会得到一个内存 Profiling 结果的文件
-/debug/pprof/block：block Profiling 的路径
-/debug/pprof/goroutines：运行的 goroutines 列表，以及调用关系
+/debug/pprof/profile： 访问这个链接会自动进行 CPU profiling，持续 30s，并生成一个文件供下载，可以通过带参数?=seconds=60进行60秒的数据采集
+
+/debug/pprof/heap： Memory Profiling 的路径，访问这个链接会得到一个内存 Profiling 结果的文件
+
+/debug/pprof/block： block Profiling 的路径
+
+/debug/pprof/goroutines： 运行的 goroutines 列表，以及调用关系
 ```
 
 直接访问这些页面产生的性能分析数据我们是分析不过来什么的，Go在1.11版本后在它自带的工具集go tool里内置了pprof工具来分析由pprof库生成的数据文件。
+
+
 
 
 使用go tool pprof
@@ -191,6 +239,7 @@ ROUTINE ======================== k8s.io/kubernetes/plugin/pkg/scheduler.podFitsO
          .          .    240:        if !fit {
 ```
 
+
 内存性能分析
 -------------
 要想获得内存使用 Profiling 信息，只需要把数据源修改一下就行（对于 HTTP 方式来说就是修改 url 的地址，从 /debug/pprof/profile 改成 /debug/pprof/heap）：
@@ -225,3 +274,151 @@ Showing top 10 nodes out of 146 (cum >= 512.31kB)
 类似的，web 命令也能生成 svg 图片在浏览器中打开，从中可以看到函数调用关系，以及每个函数的内存使用多少。
 
 需要注意的是，默认情况下，统计的是内存使用大小，如果执行命令的时候加上 --inuse_objects 可以查看每个函数分配的对象数；--alloc-space 查看分配的内存空间大小。
+
+```sh
+# 查看内存占用数据
+go tool pprof -inuse_space http://localhost/debug/pprof/heap
+go tool pprof -inuse_objects http://localhost/debug/pprof/heap
+# 查看临时内存分配数据
+go tool pprof -alloc_space http://localhost/debug/pprof/heap
+go tool pprof -alloc_objects http://localhost/debug/pprof/heap
+```
+
+
+PProf可视化界面 
+================
+
+启动 PProf 可视化界面：
+----------------
+方法一：
+```sh
+go tool pprof -http=:8080 cpu.prof
+#go tool pprof -http="0.0.0.0:8080" cpu.prof
+```
+
+
+查看 PProf 可视化界面：
+----------------
+1）Top
+
+2）Graph   
+  框越大，线越粗代表它占用的时间越大哦
+
+  每个框代表一个函数，理论上框的越大表示占用的CPU资源越多。 方框之间的线条代表函数之间的调用关系。 线条上的数字表示函数调用的次数。 方框中的第一行数字表示当前函数占用CPU的百分比，第二行数字表示当前函数累计占用CPU的百分比。
+
+3）Flame Graph，go1.11的pprof的UI中已经可以查看火焰图的
+
+4）Peek
+
+5）Source
+
+
+通过 PProf 的可视化界面，我们能够更方便、更直观的看到 Go 应用程序的调用链、使用情况等，并且在 View 菜单栏中，还支持如上多种方式的切换。
+
+你想想，在烦恼不知道什么问题的时候，能用这些辅助工具来检测问题，是不是瞬间效率翻倍了呢 ?。
+
+
+
+
+一个工具型应用例子
+-----------------
+```golang
+// runtime_pprof/main.go
+package main
+
+import (
+  "flag"
+  "fmt"
+  "os"
+  "runtime/pprof"
+  "time"
+)
+
+// 一段有问题的代码
+func logicCode() {
+  var c chan int
+  for {
+    select {
+    case v := <-c:
+      fmt.Printf("recv from chan, value:%v\n", v)
+    default:
+
+    }
+  }
+}
+
+func main() {
+  var isCPUPprof bool
+  var isMemPprof bool
+
+  flag.BoolVar(&isCPUPprof, "cpu", false, "turn cpu pprof on")
+  flag.BoolVar(&isMemPprof, "mem", false, "turn mem pprof on")
+  flag.Parse()
+
+  if isCPUPprof {
+    file, err := os.Create("./cpu.pprof")
+    if err != nil {
+      fmt.Printf("create cpu pprof failed, err:%v\n", err)
+      return
+    }
+    pprof.StartCPUProfile(file)
+    defer pprof.StopCPUProfile()
+  }
+  for i := 0; i < 8; i++ {
+    go logicCode()
+  }
+  time.Sleep(20 * time.Second)
+  if isMemPprof {
+    file, err := os.Create("./mem.pprof")
+    if err != nil {
+      fmt.Printf("create mem pprof failed, err:%v\n", err)
+      return
+    }
+    pprof.WriteHeapProfile(file)
+    file.Close()
+  }
+}
+```
+
+
+一个http例子
+-----------------
+```golang
+package main
+
+import (
+        "log"
+        _ "net/http/pprof"
+        "net/http"
+        "time"
+)
+
+func main() {
+
+        go func() {
+                log.Println(http.ListenAndServe("localhost:6060", nil))
+        }()
+
+        go worker()
+
+        select{}
+}
+
+// simple worker
+func worker(){
+
+        strSlice := []string{}
+        for {
+                str := "hello world "
+                strSlice = append(strSlice, str)
+
+                time.Sleep(time.Second)
+        }
+
+}
+```
+
+http例子，一般要配合压测，来使用才能看到效果。
+
+否则，就要像这个demo一样，专门起一个协程写一个一直运行的worker。
+
